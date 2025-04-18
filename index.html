@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>天蒙公司运营管理部日报提交系统</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="lib/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.png" alt="天蒙公司Logo" class="logo">
+                <h1>天蒙公司运营管理部日报提交系统</h1>
+            </div>
+            <p class="date" id="currentDate"></p>
+        </header>
+
+        <div class="form-container">
+            <form id="reportForm">
+                <div class="form-group">
+                    <label for="department">选择二级部门:</label>
+                    <select id="department" name="department" required>
+                        <option value="" disabled selected>请选择部门</option>
+                        <option value="景交车队">景交车队</option>
+                        <option value="餐饮">餐饮</option>
+                        <option value="商超">商超</option>
+                        <option value="酒店">酒店</option>
+                        <option value="景点管理">景点管理</option>
+                        <option value="游客中心">游客中心</option>
+                        <option value="检票">检票</option>
+                        <option value="保洁">保洁</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="todayWork">今日主要工作:</label>
+                    <textarea id="todayWork" name="todayWork" rows="5"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="problems">发现及需要解决的问题:</label>
+                    <textarea id="problems" name="problems" rows="5"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tomorrowPlan">明日工作计划:</label>
+                    <textarea id="tomorrowPlan" name="tomorrowPlan" rows="5"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="data">数据:</label>
+                    <textarea id="data" name="data" rows="5"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="remarks">备注:</label>
+                    <textarea id="remarks" name="remarks" rows="5"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-submit">提交报告</button>
+                    <button type="reset" class="btn btn-reset">重置</button>
+                </div>
+            </form>
+            
+            <div id="loadingIndicator" class="loading-indicator">
+                <div class="spinner"></div>
+                <p>提交中，请稍候...</p>
+            </div>
+        </div>
+
+        <footer>
+            <p>© 2025 天蒙公司</p>
+            <button id="adminLogin" class="btn btn-admin">管理员登录</button>
+        </footer>
+    </div>
+
+    <!-- 管理员登录模态框 -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>管理员登录</h2>
+            <div class="form-group">
+                <label for="adminPassword">密码:</label>
+                <input type="password" id="adminPassword" name="adminPassword" required>
+            </div>
+            <button id="loginBtn" class="btn btn-submit">登录</button>
+        </div>
+    </div>
+
+   <!-- 管理员面板 -->
+<div id="adminPanel" class="admin-panel">
+    <div class="admin-header">
+        <h2>管理员面板</h2>
+        <button id="closeAdmin" class="close-btn">&times;</button>
+    </div>
+    <div class="admin-content">
+        <!-- 日期选择区 -->
+        <div class="date-selection">
+            <h3>选择日期</h3>
+            <div class="date-picker">
+                <input type="date" id="reportDate" name="reportDate">
+                <button id="viewByDate" class="btn btn-view">查看所选日期</button>
+                <button id="viewToday" class="btn btn-view">查看今日</button>
+            </div>
+            
+            <div class="export-actions">
+                <h4>导出选定日期报告:</h4>
+                <button id="exportExcel" class="btn btn-export">导出为Excel</button>
+                <button id="exportJSON" class="btn btn-export">导出为JSON</button>
+            </div>
+        </div>
+        
+        <!-- 当前查看日期显示 -->
+        <div class="current-date">
+            <h3>当前查看: <span id="currentViewDate">今日</span></h3>
+        </div>
+        
+        <h3>部门提交情况</h3>
+        <div id="departmentStatus" class="department-status">
+            <!-- 部门提交状态会在这里动态生成 -->
+            <div class="loading">加载中...</div>
+        </div>
+        
+        <h3>提交历史记录</h3>
+        <div id="submissionHistory" class="submission-history">
+            <!-- 提交历史记录会在这里动态生成 -->
+            <div class="loading">加载中...</div>
+        </div>
+    </div>
+</div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
