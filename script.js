@@ -137,6 +137,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const viewTodayBtn = document.getElementById('viewToday');
     const currentViewDateSpan = document.getElementById('currentViewDate');
     
+    // 补交日报相关元素
+    const makeupDateInput = document.getElementById('makeupDate');
+    const makeupDepartmentSelect = document.getElementById('makeupDepartment');
+    const loadMakeupFormBtn = document.getElementById('loadMakeupForm');
+    const makeupFormContent = document.getElementById('makeupFormContent');
+    const makeupReportForm = document.getElementById('makeupReportForm');
+    
     // 设置日期输入框默认值为今天
     function setDefaultDate() {
         const today = new Date();
@@ -146,9 +153,19 @@ document.addEventListener('DOMContentLoaded', function() {
         reportDateInput.value = `${yyyy}-${mm}-${dd}`;
     }
     
+    // 设置补交日期输入框默认值为今天
+    function setDefaultMakeupDate() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        makeupDateInput.value = `${yyyy}-${mm}-${dd}`;
+    }
+    
     function showAdminPanel() {
         adminPanel.style.display = 'block';
         setDefaultDate();
+        setDefaultMakeupDate(); // 设置补交日期默认值
         // 初始查看今天的数据
         updateViewDate('今日');
         updateDepartmentStatus(getTodayDateString());
@@ -377,6 +394,174 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Error:', error);
             alert('导出失败，请稍后重试。');
+        });
+    });
+    
+    // 补交日报功能 - 加载表单按钮点击事件
+    loadMakeupFormBtn.addEventListener('click', function() {
+        const selectedDate = makeupDateInput.value;
+        const selectedDepartment = makeupDepartmentSelect.value;
+        
+        if (!selectedDate) {
+            alert('请选择日期');
+            return;
+        }
+        
+        if (!selectedDepartment) {
+            alert('请选择部门');
+            return;
+        }
+        
+        // 确保日期格式正确 (YYYY-MM-DD)
+        const formattedDate = selectedDate.split('T')[0]; // 处理可能的时间部分
+        
+        console.log('补交日报: 选择的日期和部门', formattedDate, selectedDepartment);
+        
+        // 加载该部门在该日期的报告数据（如果存在）
+        loadDepartmentReport(formattedDate, selectedDepartment);
+    });
+    
+    // 加载部门报告数据
+    function loadDepartmentReport(date, department) {
+        console.log('加载部门报告数据:', date, department);
+        
+        // 显示补交表单区域
+        makeupFormContent.style.display = 'block';
+        
+        // 显示加载指示器
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'loading';
+        loadingDiv.textContent = '加载中...';
+        makeupFormContent.prepend(loadingDiv);
+        
+        // 清空表单
+        document.getElementById('makeupTodayWork').value = '';
+        document.getElementById('makeupProblems').value = '';
+        document.getElementById('makeupTomorrowPlan').value = '';
+        document.getElementById('makeupData').value = '';
+        document.getElementById('makeupRemarks').value = '';
+        
+        // 获取报告数据
+        fetch(`api/get_reports.php?date=${date}`)
+        .then(response => response.json())
+        .then(data => {
+            // 移除加载指示器
+            if (loadingDiv.parentNode) {
+                loadingDiv.parentNode.removeChild(loadingDiv);
+            }
+            
+            console.log('加载的数据:', data);
+            
+            const dateData = data[date] || {};
+            const departmentData = dateData[department];
+            
+            // 如果找到该部门的数据，填充表单
+            if (departmentData) {
+                document.getElementById('makeupTodayWork').value = departmentData.todayWork || '';
+                document.getElementById('makeupProblems').value = departmentData.problems || '';
+                document.getElementById('makeupTomorrowPlan').value = departmentData.tomorrowPlan || '';
+                document.getElementById('makeupData').value = departmentData.data || '';
+                document.getElementById('makeupRemarks').value = departmentData.remarks || '';
+                
+                console.log('已加载现有数据');
+            } else {
+                console.log('未找到数据，表单为空');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // 移除加载指示器
+            if (loadingDiv.parentNode) {
+                loadingDiv.parentNode.removeChild(loadingDiv);
+            }
+            
+            alert('加载数据失败，请稍后重试');
+        });
+    }
+    
+    // 补交报告表单提交
+    makeupReportForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const selectedDate = makeupDateInput.value;
+        const selectedDepartment = makeupDepartmentSelect.value;
+        
+        if (!selectedDate || !selectedDepartment) {
+            alert('请选择日期和部门');
+            return;
+        }
+        
+        // 确保日期格式正确 (YYYY-MM-DD)
+        const formattedDate = selectedDate.split('T')[0];
+        
+        // 获取表单数据
+        let todayWork = document.getElementById('makeupTodayWork').value.trim();
+        let problems = document.getElementById('makeupProblems').value.trim();
+        let tomorrowPlan = document.getElementById('makeupTomorrowPlan').value.trim();
+        let data = document.getElementById('makeupData').value.trim();
+        let remarks = document.getElementById('makeupRemarks').value.trim();
+        
+        // 检查是否至少填写了一个内容
+        if (!todayWork && !problems && !tomorrowPlan && !data && !remarks) {
+            alert('请至少填写一项内容！');
+            return;
+        }
+        
+        // 空字段自动填充"无"
+        todayWork = todayWork || "无";
+        problems = problems || "无";
+        tomorrowPlan = tomorrowPlan || "无";
+        data = data || "无";
+        remarks = remarks || "无";
+        
+        // 准备要发送的数据
+        const reportData = {
+            department: selectedDepartment,
+            todayWork,
+            problems,
+            tomorrowPlan,
+            data,
+            remarks,
+            reportDate: formattedDate // 添加报告日期字段
+        };
+        
+        console.log('提交补交报告数据:', reportData);
+        
+        // 显示加载指示器
+        showLoading();
+        
+        // 发送数据到服务器
+        fetch('api/save_report.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reportData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            hideLoading();
+            if (data.success) {
+                alert(`${selectedDepartment}部门补交日报提交成功！`);
+                // 隐藏补交表单区域
+                makeupFormContent.style.display = 'none';
+                // 更新当前查看的数据（如果是同一天）
+                const currentViewDate = currentViewDateSpan.textContent;
+                const viewDateObj = new Date(formattedDate);
+                const viewDateString = viewDateObj.toLocaleDateString('zh-CN', { year: 'numeric', month: 'numeric', day: 'numeric' });
+                
+                if (currentViewDate === viewDateString || (currentViewDate === '今日' && formattedDate === getTodayDateString())) {
+                    updateDepartmentStatus(formattedDate);
+                    updateSubmissionHistory(formattedDate);
+                }
+            } else {
+                alert(`提交失败：${data.message}`);
+            }
+        })
+        .catch(error => {
+            hideLoading();
+            console.error('Error:', error);
+            alert('提交失败，请稍后重试或联系管理员。');
         });
     });
     

@@ -118,6 +118,61 @@
             <h3>当前查看: <span id="currentViewDate">今日</span></h3>
         </div>
         
+        <!-- 补交日报区域 -->
+        <div class="makeup-report-section">
+            <h3>补交日报</h3>
+            <div class="makeup-form-container">
+                <div class="form-group">
+                    <label for="makeupDate">选择日期:</label>
+                    <input type="date" id="makeupDate" name="makeupDate">
+                </div>
+                <div class="form-group">
+                    <label for="makeupDepartment">选择部门:</label>
+                    <select id="makeupDepartment" name="makeupDepartment">
+                        <option value="" disabled selected>请选择部门</option>
+                        <option value="景交车队">景交车队</option>
+                        <option value="餐饮">餐饮</option>
+                        <option value="商超">商超</option>
+                        <option value="酒店">酒店</option>
+                        <option value="景点管理">景点管理</option>
+                        <option value="游客中心">游客中心</option>
+                        <option value="检票">检票</option>
+                        <option value="保洁">保洁</option>
+                    </select>
+                </div>
+                <button id="loadMakeupForm" class="btn btn-view">加载表单</button>
+            </div>
+            
+            <div id="makeupFormContent" class="makeup-form-content" style="display: none;">
+                <form id="makeupReportForm">
+                    <div class="form-group">
+                        <label for="makeupTodayWork">今日主要工作:</label>
+                        <textarea id="makeupTodayWork" name="todayWork" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="makeupProblems">发现及需要解决的问题:</label>
+                        <textarea id="makeupProblems" name="problems" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="makeupTomorrowPlan">明日工作计划:</label>
+                        <textarea id="makeupTomorrowPlan" name="tomorrowPlan" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="makeupData">数据:</label>
+                        <textarea id="makeupData" name="data" rows="5"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="makeupRemarks">备注:</label>
+                        <textarea id="makeupRemarks" name="remarks" rows="5"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-submit">提交补交报告</button>
+                        <button type="reset" class="btn btn-reset">重置</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
         <h3>部门提交情况</h3>
         <div id="departmentStatus" class="department-status">
             <!-- 部门提交状态会在这里动态生成 -->

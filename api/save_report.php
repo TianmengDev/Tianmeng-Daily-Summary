@@ -15,19 +15,28 @@ if (!$data || !isset($data['department'])) {
     exit;
 }
 
-// 获取当前日期
-$date = getTodayDate();
+// 获取日期：如果POST数据中包含reportDate则使用，否则使用当前日期
+$date = isset($data['reportDate']) ? $data['reportDate'] : getTodayDate();
+
+// 记录操作日志
+$logMessage = date('Y-m-d H:i:s') . " - 保存报告: 部门={$data['department']}, 日期={$date}\n";
+file_put_contents(__DIR__ . '/reports_log.txt', $logMessage, FILE_APPEND);
 
 // 读取现有报告数据
 $reports = getReports();
 
-// 如果今日的数据不存在，创建一个空数组
+// 如果该日期的数据不存在，创建一个空数组
 if (!isset($reports[$date])) {
     $reports[$date] = [];
 }
 
 // 设置更新时间
 $data['updatedAt'] = date('c');
+
+// 移除reportDate字段（不需要存储）
+if (isset($data['reportDate'])) {
+    unset($data['reportDate']);
+}
 
 // 保存或更新部门报告
 $reports[$date][$data['department']] = $data;

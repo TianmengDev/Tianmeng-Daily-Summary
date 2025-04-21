@@ -374,3 +374,44 @@ footer {
     border-radius: 4px;
     margin: 10px 0;
 }
+
+/* 补交日报区域样式 */
+.makeup-report-section {
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+    border: 1px solid #e0e0e0;
+}
+
+.makeup-form-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: flex-end;
+    margin-bottom: 15px;
+}
+
+.makeup-form-container .form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.makeup-form-content {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 15px;
+    border: 1px solid #e0e0e0;
+}
+
+/* 确保表单组件在小屏幕上正常显示 */
+@media (max-width: 768px) {
+    .makeup-form-container {
+        flex-direction: column;
+    }
+    
+    .makeup-form-container .form-group {
+        width: 100%;
+    }
+}
