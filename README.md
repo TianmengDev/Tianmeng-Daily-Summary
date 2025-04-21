@@ -12,9 +12,8 @@ Tianmeng Daily Summary 是一个专为天蒙公司运营管理部开发的日报
 以下是系统的运行截图，展示了主要界面和功能：
 | 截图1 | 截图2 |
 |-------|-------|
-| ! | ![Screenshot 2](https://raw.githubusercontent.com/TianmengDev/Tianmeng-Daily-Summary/refs/heads/main/screenshot-2.png) |
+| ![Screenshot 1](https://raw.githubusercontent.com/TianmengDev/Tianmeng-Daily-Summary/refs/heads/main/screenshot-1.png) | ![Screenshot 2](https://raw.githubusercontent.com/TianmengDev/Tianmeng-Daily-Summary/refs/heads/main/screenshot-2.png) |
 | 截图3 | 截图4 |
-|-------|-------|
 | ![Screenshot 3](https://raw.githubusercontent.com/TianmengDev/Tianmeng-Daily-Summary/refs/heads/main/screenshot-3.png) | ![Screenshot 4](https://raw.githubusercontent.com/TianmengDev/Tianmeng-Daily-Summary/refs/heads/main/screenshot-4.png) |
 
 ## 主要功能
